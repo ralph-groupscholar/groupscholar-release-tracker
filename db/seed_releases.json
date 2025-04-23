@@ -1,0 +1,55 @@
+{
+  "next_id": 6,
+  "records": [
+    {
+      "id": 1,
+      "name": "Avery Hudson",
+      "doc_type": "Photo Release",
+      "contact": "avery.hudson@example.org",
+      "due_date": "2026-03-01",
+      "status": "pending",
+      "notes": "Needed for spring cohort story.",
+      "created_at": "1738963200"
+    },
+    {
+      "id": 2,
+      "name": "Jalen Ortiz",
+      "doc_type": "Video Release",
+      "contact": "jalen.ortiz@example.org",
+      "due_date": "2026-02-20",
+      "status": "received",
+      "notes": "Signed during winter showcase.",
+      "created_at": "1738704000"
+    },
+    {
+      "id": 3,
+      "name": "Mina Patel",
+      "doc_type": "Mentor Consent",
+      "contact": "mina.patel@example.org",
+      "due_date": "2026-02-18",
+      "status": "approved",
+      "notes": "Approved by mentor lead.",
+      "created_at": "1738617600"
+    },
+    {
+      "id": 4,
+      "name": "Dante Brooks",
+      "doc_type": "Partner Use Consent",
+      "contact": "dante.brooks@example.org",
+      "due_date": "2026-02-10",
+      "status": "pending",
+      "notes": "Awaiting partner signature.",
+      "created_at": "1738531200"
+    },
+    {
+      "id": 5,
+      "name": "Rina Cho",
+      "doc_type": "Audio Release",
+      "contact": "rina.cho@example.org",
+      "due_date": "2026-02-15",
+      "status": "expired",
+      "notes": "Expired before community showcase.",
+      "created_at": "1738272000"
+    }
+  ]
+}
