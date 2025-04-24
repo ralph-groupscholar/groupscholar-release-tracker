@@ -144,6 +144,19 @@ pub fn matchesStatus(record: Record, filter: ?[]const u8) bool {
     return std.mem.eql(u8, record.status, filter.?);
 }
 
+pub fn expireRecords(allocator: std.mem.Allocator, db: *Database, as_of: []const u8) !usize {
+    var expired: usize = 0;
+    for (db.records) |*record| {
+        if (std.mem.eql(u8, record.status, "approved")) continue;
+        if (std.mem.eql(u8, record.status, "expired")) continue;
+        if (std.mem.order(u8, record.due_date, as_of) == .lt) {
+            record.status = try allocator.dupe(u8, "expired");
+            expired += 1;
+        }
+    }
+    return expired;
+}
+
 pub fn formatRecordLine(allocator: std.mem.Allocator, record: Record) ![]const u8 {
     return std.fmt.allocPrint(
         allocator,
@@ -166,6 +179,7 @@ pub fn formatUsage(allocator: std.mem.Allocator) ![]const u8 {
         \\  release-tracker update <data.json> --id ID --status STATUS [--notes NOTES]
         \\  release-tracker list <data.json> [--status STATUS]
         \\  release-tracker report <data.json>
+        \\  release-tracker expire <data.json> --as-of YYYY-MM-DD
         \\  release-tracker sync <data.json> [--schema NAME] [--table NAME]
         \\  release-tracker help
         ,
@@ -364,4 +378,52 @@ test "sql escaping" {
     const escaped = try escapeSqlString(std.testing.allocator, "O'Reilly");
     defer std.testing.allocator.free(escaped);
     try std.testing.expectEqualStrings("O''Reilly", escaped);
+}
+
+test "expire records" {
+    var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena.deinit();
+
+    var records = [_]Record{
+        .{
+            .id = 1,
+            .name = "A",
+            .doc_type = "Photo",
+            .contact = "a@example.com",
+            .due_date = "2026-01-10",
+            .status = "pending",
+            .notes = "",
+            .created_at = "0",
+        },
+        .{
+            .id = 2,
+            .name = "B",
+            .doc_type = "Video",
+            .contact = "b@example.com",
+            .due_date = "2026-03-01",
+            .status = "received",
+            .notes = "",
+            .created_at = "0",
+        },
+        .{
+            .id = 3,
+            .name = "C",
+            .doc_type = "Photo",
+            .contact = "c@example.com",
+            .due_date = "2026-01-05",
+            .status = "approved",
+            .notes = "",
+            .created_at = "0",
+        },
+    };
+    var db = Database{
+        .next_id = 4,
+        .records = records[0..],
+    };
+
+    const expired = try expireRecords(arena.allocator(), &db, "2026-02-01");
+    try std.testing.expectEqual(@as(usize, 1), expired);
+    try std.testing.expectEqualStrings("expired", db.records[0].status);
+    try std.testing.expectEqualStrings("received", db.records[1].status);
+    try std.testing.expectEqualStrings("approved", db.records[2].status);
 }

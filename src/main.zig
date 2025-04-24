@@ -277,7 +277,8 @@ fn optionOrEnv(
 }
 
 fn runPsql(allocator: std.mem.Allocator, database_url: []const u8, sql: []const u8) !void {
-    var argv = std.ArrayList([]const u8).init(allocator);
+    var argv = std.array_list.Managed([]const u8).init(allocator);
+    defer argv.deinit();
     try argv.append("psql");
     try argv.append("-v");
     try argv.append("ON_ERROR_STOP=1");

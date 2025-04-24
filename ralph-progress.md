@@ -1,5 +1,10 @@
 # Ralph Progress Log
 
+## Iteration 30 (2026-02-08)
+- Added an expire command to mark overdue release records as expired based on an as-of date.
+- Expanded CLI usage docs and README with the new expiry workflow.
+- Added Zig tests for the expiry logic.
+
 ## Iteration 31 (2026-02-08)
 - Created the `groupscholar-release-tracker` Zig CLI for tracking release forms.
 - Implemented JSON-backed storage with add/update/list/report commands.

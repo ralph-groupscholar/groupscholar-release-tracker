@@ -8,6 +8,7 @@ Group Scholar operations often need to track media release forms, consent docume
 - Update status and notes for existing records
 - List records with optional status filtering
 - Generate a quick status report
+- Expire overdue records as of a given date
 - Sync the local ledger to Postgres for centralized reporting
 
 ## Usage
@@ -27,6 +28,8 @@ zig build run -- list data/releases.json --status pending
 zig build run -- update data/releases.json --id 1 --status received --notes "Signed 2026-02-05"
 
 zig build run -- report data/releases.json
+
+zig build run -- expire data/releases.json --as-of 2026-02-15
 ```
 
 ## Postgres Sync
