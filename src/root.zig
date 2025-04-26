@@ -150,7 +150,7 @@ pub fn expireRecords(allocator: std.mem.Allocator, db: *Database, as_of: []const
         if (std.mem.eql(u8, record.status, "approved")) continue;
         if (std.mem.eql(u8, record.status, "expired")) continue;
         if (std.mem.order(u8, record.due_date, as_of) == .lt) {
-            record.status = try allocator.dupe(u8, "expired");
+            record.status = "expired";
             expired += 1;
         }
     }
