@@ -52,6 +52,12 @@ You can also seed the database using the bundled sample data:
 python scripts/sync_postgres.py --truncate
 ```
 
+You can target a specific schema/table if needed:
+
+```bash
+python scripts/sync_postgres.py --schema release_tracker --table release_records
+```
+
 ## Data Model
 Each record stores:
 - `id`

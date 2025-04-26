@@ -14,3 +14,7 @@
 - Added Postgres sync helper with SQLAlchemy for centralized reporting.
 - Seeded the production database schema with realistic sample records.
 - Documented database sync flow and added Python tests + .gitignore updates.
+
+## Iteration 126 (2026-02-08)
+- Fixed the Postgres sync helper to accept a configurable table name and corrected the sync completion message.
+- Documented the optional schema/table targeting for the sync script.

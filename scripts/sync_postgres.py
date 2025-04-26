@@ -99,15 +99,16 @@ def ensure_schema(engine, schema: str) -> None:
         connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {schema}"))
 
 
-def sync_records(engine, schema: str, records: list[dict], truncate: bool) -> None:
+def sync_records(engine, schema: str, table: str, records: list[dict], truncate: bool) -> None:
     ReleaseRecord.__table__.schema = schema
+    ReleaseRecord.__table__.name = table
 
     Base.metadata.create_all(engine)
 
     Session = sessionmaker(engine)
     with Session.begin() as session:
         if truncate:
-            session.execute(text(f"TRUNCATE TABLE {schema}.{DEFAULT_TABLE}"))
+            session.execute(text(f"TRUNCATE TABLE {schema}.{table}"))
         if not records:
             return
         stmt = insert(ReleaseRecord).values(records)
@@ -129,6 +130,7 @@ def main() -> None:
         help="Path to the JSON ledger (defaults to db/seed_releases.json).",
     )
     parser.add_argument("--schema", default=DEFAULT_SCHEMA, help="Postgres schema name.")
+    parser.add_argument("--table", default=DEFAULT_TABLE, help="Postgres table name.")
     parser.add_argument("--truncate", action="store_true", help="Truncate table before insert.")
 
     args = parser.parse_args()
@@ -140,7 +142,7 @@ def main() -> None:
     engine = create_engine(database_url, pool_pre_ping=True)
 
     ensure_schema(engine, args.schema)
-    sync_records(engine, args.schema, records, args.truncate)
+    sync_records(engine, args.schema, args.table, records, args.truncate)
 
     print(f"Synced {len(records)} records to {args.schema}.{args.table}.")
 
